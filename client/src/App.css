@@ -1,20 +1,10 @@
 @import '~antd/dist/antd.css';
-.App {
-  text-align: center;
-}
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
 .wrap {
   max-width: 500px;
-  padding: 20px;
-  margin: 0 auto;
+  padding: 10px;
+  margin: 20px auto;
+  border: 1px solid #ccc;
+}
+.margin-top {
+  margin-top: 20px;
 }

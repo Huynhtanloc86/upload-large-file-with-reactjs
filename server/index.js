@@ -27,7 +27,6 @@ server.post("/upload", (req, res) => {
     let hash = fields.hash[0];
     let chunk = files.chunk[0];
     let dir = `${STATIC_TEMPORARY}/${filename}`;
-    // console.log(filename, hash, chunk)
     try {
       if (!fs.existsSync(dir)) fs.mkdirSync(dir);
       const buffer = fs.readFileSync(chunk.path);

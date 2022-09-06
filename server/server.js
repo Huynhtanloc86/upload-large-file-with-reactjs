@@ -23,7 +23,6 @@ server.use(
 server.post("/upload", (req, res) => {
   const form = new multiparty.Form();
   form.parse(req, function (err, fields, files) {
-    console.log(fields);
     let filename = fields.filename[0];
     let hash = fields.hash[0];
     let chunk = files.chunk[0];
@@ -51,7 +50,7 @@ server.get("/merge", async (req, res) => {
       .readdirSync(`${STATIC_TEMPORARY}/${filename}`)
       .map((hash, index) => {
         const buffer = fs.readFileSync(
-          `${STATIC_TEMPORARY}/${filename}/${index + 1}`
+          `${STATIC_TEMPORARY}/${filename}/${index}`
         );
         len += buffer.length;
         return buffer;
