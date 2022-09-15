@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import axios from "axios";
 import { Upload, Progress, Space, Button, message } from "antd";
 import { InboxOutlined, UploadOutlined } from "@ant-design/icons";
@@ -6,7 +6,7 @@ import { InboxOutlined, UploadOutlined } from "@ant-design/icons";
 axios.defaults.baseURL = "http://localhost:4001";
 const chunkSize = 1024 * 1024 * 10; //10MB section size, increase the number measure in mb
 
-function App() {
+function UploadFile() {
   const [fileChunkList, setFileChunkList] = useState([]);
   const [fileChunkTotal, setFileChunkTotal] = useState(0);
   const [fileGuid, setFileGuid] = useState("");
@@ -14,9 +14,9 @@ function App() {
 
   const [showProgress, setShowProgress] = useState(false);
   const [progress, setProgress] = useState(0);
-  // const [uploadSuccessCount, setUploadSuccessCount] = useState(0);
   const [failChunkList, setFailChunkList] = useState([]);
 
+  // Generate a file slices
   const createFileChunkHandler = ({ file }) => {
     let index = 0; // Section num
     let fileChunks = [];
@@ -27,6 +27,7 @@ function App() {
         name: file.name,
       });
     }
+    // Save info file on state of component
     setFileChunkList(fileChunks);
     setFileChunkTotal(fileChunks.length);
     setFileGuid(file.name);
@@ -35,15 +36,16 @@ function App() {
 
   // start upload file chunks
   const startUploadChunks = useCallback(() => {
-    uploadChunksHandler(fileChunkList, setProgress);
+    uploadChunksHandler(fileChunkList);
     setShowProgress(true);
   }, [fileChunkList]);
 
+  // Resumable the failure list
   const uploadResume = () => {
-    uploadChunksHandler(failChunkList, setProgress);
+    uploadChunksHandler(failChunkList);
   };
 
-  const uploadChunksHandler = async (fileChunkList, updateProgress) => {
+  const uploadChunksHandler = async (fileChunkList) => {
     let pool = []; //Concurrent pool
     let max = 10; //Maximum concurrency
     let finish = 0; //Quantity completed
@@ -67,11 +69,12 @@ function App() {
             const totalPercentComplete = Math.round(
               (finish / fileChunkTotal) * 100 + percentComplete / fileChunkTotal
             );
-            updateProgress(totalPercentComplete + progress);
+            setProgress(totalPercentComplete + progress);
           }
         },
       })
         .then(({ data }) => {
+          if (data.isSuccess) console.log("Upload chunk successful");
           //Remove the Promise task from the concurrency pool when the request ends
           let index = pool.findIndex((t) => t === task);
           pool.splice(index);
@@ -167,4 +170,4 @@ function App() {
   );
 }
 
-export default App;
+export default UploadFile;
