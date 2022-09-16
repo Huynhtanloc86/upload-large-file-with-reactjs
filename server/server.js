@@ -41,6 +41,7 @@ server.post("/upload", (req, res) => {
     }
   });
 });
+
 //Merged slice interface
 server.get("/merge", async (req, res) => {
   const { filename } = req.query;
